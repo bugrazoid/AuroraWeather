@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=ru.bugrazoid.Weather
+Exec=/usr/bin/ru.bugrazoid.Weather
+Name=Weather
+Name[ru]=Погода
+
+[X-Application]
+Permissions=Internet;Location;UserDirs
+OrganizationName=ru.bugrazoid
+ApplicationName=Weather
+ExecDBus=/usr/bin/ru.bugrazoid.Weather
