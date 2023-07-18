@@ -50,7 +50,7 @@
 <context>
     <name>FindCity</name>
     <message>
-        <location filename="../qml/pages/FindCity.qml" line="16"/>
+        <location filename="../qml/pages/FindCity.qml" line="17"/>
         <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58,17 +58,17 @@
 <context>
     <name>WeatherPage</name>
     <message>
-        <location filename="../qml/pages/WeatherPage.qml" line="130"/>
+        <location filename="../qml/pages/WeatherPage.qml" line="177"/>
         <source>Weather</source>
         <translation type="unfinished">Погода</translation>
     </message>
     <message>
-        <location filename="../qml/pages/WeatherPage.qml" line="239"/>
+        <location filename="../qml/pages/WeatherPage.qml" line="287"/>
         <source>Ветер: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/WeatherPage.qml" line="239"/>
+        <location filename="../qml/pages/WeatherPage.qml" line="287"/>
         <source>м/с</source>
         <translation type="unfinished"></translation>
     </message>

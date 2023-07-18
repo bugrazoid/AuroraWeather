@@ -22,7 +22,7 @@ Page {
             right: parent.right
         }
 
-        model: root.cityManager
+        model: cityManager
 
         delegate: Row {
             width: ListView.width
@@ -39,8 +39,9 @@ Page {
                 text: cityName
                 onClicked: {
                     console.log("select current city", text);
-                    root.cityManager.currentCity = text;
-                    root.cityManager.loadCurrentCityDataFromFavorite();
+                    const data = cityManager.loadCityDataFromFavorite(text);
+                    cityManager.currentCityData = data;
+                    cityManager.currentCity = text;
                     pageStack.pop();
                 }
             }

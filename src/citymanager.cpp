@@ -7,7 +7,6 @@
 
 CityManager::CityManager(QObject *parent)
     : QAbstractListModel(parent),
-      current_city("Москва"),
       settings(ORGANIZATION_NAME, APPLICATION_NAME)
 {
     auto cc = settings.value("current_city").toString();
@@ -103,9 +102,7 @@ const QVariantMap &CityManager::currentCityData() const
 void CityManager::setCurrentCityData(const QVariantMap& data)
 {
     qDebug() << data;
-    for (auto it = data.begin(); it != data.end(); ++it) {
-        current_city_data.insert(it.key(), it.value());
-    }
+    current_city_data = data;
     Q_EMIT currentCityDataChanged();
 }
 
@@ -113,6 +110,9 @@ void CityManager::apply()
 {
     for (auto it = to_remove.begin(); it != to_remove.end(); ++it) {
         favorites.remove(*it);
+        if (*it == current_city) {
+            Q_EMIT currentCityFavoriteChanged();
+        }
     }
     to_remove.clear();
 }
@@ -141,9 +141,21 @@ void CityManager::clean()
     qDebug() << "clean data";
 }
 
-void CityManager::loadCurrentCityDataFromFavorite()
+QVariantMap CityManager::loadCityDataFromFavorite(const QString& name)
 {
-    setCurrentCityData(favorites.value(current_city));
+    return favorites.value(name);
+}
+
+void CityManager::appendCurrentCityData(const QVariantMap &data)
+{
+    qDebug() << data;
+    for (auto it = data.begin(); it != data.end(); ++it) {
+        current_city_data.insert(it.key(), it.value());
+    }
+    if (favorites.contains(current_city)) {
+        favorites[current_city] = current_city_data;
+    }
+    Q_EMIT currentCityDataChanged();
 }
 
 int CityManager::registerType()

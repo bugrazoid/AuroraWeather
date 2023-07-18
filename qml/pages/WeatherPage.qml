@@ -39,19 +39,28 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import ru.bugrazoid.Types 1.0
 import "../js/common.js" as Common
+import "../items/"
 
 Page {
     id: root
     objectName: "mainPage"
 
     property var http: {new XMLHttpRequest()}
+    property string ip: ""
 
     signal updateCurrentCityDataAcuired()
     onUpdateCurrentCityDataAcuired: update()
 
+    signal ipAcuired()
+    onIpAcuired: update()
+
+    signal geoAcuired()
+    onGeoAcuired: update()
+
     Component.onCompleted: {
-        updateUI(cityManager.currentCityData)
-        update()
+        console.log("WeatherPage.qml loaded");
+        updateUI();
+        update();
     }
 
     allowedOrientations: Orientation.All
@@ -62,10 +71,11 @@ Page {
                       + "latitude=" + lat
                       + "&longitude=" + lon
                       + "&current_weather=true";
-        Common.makeRequest(root.http, "GET", request, function(json) {
+        Common.makeRequest(http, "GET", request, function(json) {
             const data = Common.processWeather(json);
-            cityManager.currentCityData = data;
+            cityManager.appendCurrentCityData(data);
             updateTimer.start();
+            itemLoader.stop();
         });
     }
 
@@ -75,7 +85,7 @@ Page {
         const request = "https://geocoding-api.open-meteo.com/v1/search?"
                       + "name=" + cityManager.currentCity
                       + "&count=10&language=ru&format=json";
-        Common.makeRequest(root.http, "GET", request, function(json) {
+        Common.makeRequest(new XMLHttpRequest(), "GET", request, function(json) {
             const data = Common.processCity(json)[cityManager.currentCity];
             if (data !== undefined) {
                 cityManager.currentCityData = data;
@@ -88,20 +98,57 @@ Page {
 
     function update() {
         console.log("update");
-        if (cityManager.currentCityData.v_lat !== undefined && cityManager.currentCityData.v_lon !== undefined) {
+        itemLoader.start();
+        if (cityManager.currentCity === undefined || cityManager.currentCity === "") {
+            console.log("No current city");
+            console.log("ip:", ip);
+            if (ip === "") {
+                getIp();
+            } else {
+                getGeo();
+            }
+        } else if (cityManager.currentCityData.v_lat !== undefined && cityManager.currentCityData.v_lon !== undefined) {
             updateWeather(cityManager.currentCityData.v_lat, cityManager.currentCityData.v_lon);
         } else {
             updateCurrentCityData();
         }
     }
 
-    function updateUI(data) {
+    function updateUI() {
         console.log("updateUI");
-        const cw = data["v_current_weather"];
-        labelTemp.text = cw["v_temp"];
-        weatherIcon.weatherCode = cw["v_weathercode"];
-        labelWind.windspeed = cw["v_windspeed"];
-        labelWindDirection.rotation = cw["v_winddirection"];
+        const cw = cityManager.currentCityData["v_current_weather"];
+        if (cw !== undefined) {
+            labelTemp.text = cw["v_temp"];
+            weatherIcon.weatherCode = cw["v_weathercode"];
+            labelWind.windspeed = cw["v_windspeed"];
+            labelWindDirection.rotation = cw["v_winddirection"];
+        } else {
+            console.warn("no weather");
+        }
+    }
+
+    function getIp() {
+        console.log("getIp");
+        const request = "https://api.ipify.org?format=json";
+        Common.makeRequest(new XMLHttpRequest(), "GET", request, function(json) {
+            root.ip = json["ip"];
+            ipAcuired();
+        });
+    }
+
+    function getGeo() {
+        console.log("getGeo");
+        const request = "http://ipwho.is/" + ip;
+        Common.makeRequest(new XMLHttpRequest(), "GET", request, function(json) {
+            var data = {};
+            data["v_name"] = json["city"];
+            data["v_lat"] = json["latitude"];
+            data["v_lon"] = json["longitude"];
+
+            cityManager.currentCity = json["city"];
+            cityManager.currentCityData = data;
+            geoAcuired();
+        });
     }
 
     CityManager {
@@ -111,7 +158,7 @@ Page {
             favoriteSwitch.checked = currentCityFavorite;
             update();
         }
-        onCurrentCityDataChanged: updateUI(currentCityData)
+        onCurrentCityDataChanged: updateUI()
     }
 
     Timer {
@@ -119,7 +166,7 @@ Page {
         interval: 10000
         onTriggered: {
             console.log("timer");
-            updateCurrentCityData();
+            update();
         }
     }
 
@@ -180,7 +227,7 @@ Page {
 
     Item {
         id: itemWeather
-        height: 300
+        height: weatherIcon.height + 10
         width: parent.width
         anchors {
             top: itemCity.bottom
@@ -229,6 +276,7 @@ Page {
             left: parent.left
             right: parent.right
         }
+        height: labelWind.height + 10
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -244,6 +292,17 @@ Page {
                 text: "^"
             }
         }
+    }
+
+    ItemLoader {
+        id: itemLoader
+        anchors {
+            top: itemWind.bottom
+            left: parent.left
+            right: parent.right
+        }
+
+
     }
 
     Item {

@@ -28,10 +28,11 @@ public:
     void setCurrentCityData(const QVariantMap& data);
 
     Q_INVOKABLE void apply();
-    Q_INVOKABLE void toggleCity(const QString& name, bool checked, const QVariantMap &data);
+    Q_INVOKABLE void toggleCity(const QString& name, bool checked, const QVariantMap& data);
     Q_INVOKABLE bool isFavorite(const QString& name);
     Q_INVOKABLE void clean();
-    Q_INVOKABLE void loadCurrentCityDataFromFavorite();
+    Q_INVOKABLE QVariantMap loadCityDataFromFavorite(const QString &name);
+    Q_INVOKABLE void appendCurrentCityData(const QVariantMap& data);
 
     static int registerType();
 

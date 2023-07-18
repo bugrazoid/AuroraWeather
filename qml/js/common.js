@@ -11,6 +11,7 @@ function makeRequest(http, method, request, processAnswer) {
                     console.log("http.response:", http.responseText);
                     var json = JSON.parse(http.response);
                     http.abort();
+                    console.log("Abort");
                     processAnswer(json);
                 } else {
                     console.error(
@@ -32,7 +33,7 @@ function processCity(json) {
     var data = {};
     if (json !== undefined && json !== null) {
         json = json.results
-        if (json.length !==undefined) {
+        if (json !== undefined && json.length !== undefined) {
             for (var i=0; i<json.length; i++) {
                 var v = json[i];
                 var d = {

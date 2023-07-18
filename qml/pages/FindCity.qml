@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "../js/common.js" as Common
+import "../items/"
 
 Page {
     id: root
@@ -21,13 +22,23 @@ Page {
         interval: 700
         onTriggered: {
             console.log("timer triggered");
+            itemLoader.start();
             const request = "https://geocoding-api.open-meteo.com/v1/search?"
                       + "name=" + searchField.text
                       + "&count=10&language=ru&format=json";
             Common.makeRequest(root.http, "GET", request, function(json) {
                 const data = Common.processCity(json);
                 listModel.update(data);
+                itemLoader.stop();
             })
+        }
+    }
+
+    ItemLoader {
+        id: itemLoader
+        anchors {
+            top: header.bottom
+            horizontalCenter: parent.horizontalCenter
         }
     }
 
@@ -93,17 +104,19 @@ Page {
                 text: v_name
                 onClicked: {
                     console.log("select current city", text);
-                    root.cityManager.currentCity = text;
                     const data = parent.copyProps();
                     root.cityManager.currentCityData = data;
+                    root.cityManager.currentCity = text;
                     pageStack.pop();
                 }
             }
 
             function copyProps() {
+                console.log("copyProps");
                 const item = listModel.get(index);
                 const data = {};
                 for (var prop in item) {
+                    console.log(prop)
                     data[prop] = item[prop];
                 }
                 return data;

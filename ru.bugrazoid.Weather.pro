@@ -37,17 +37,28 @@
 
 TARGET = ru.bugrazoid.Weather
 
+QT += network sensors positioning location
+
 CONFIG += \
     auroraapp
 
 PKGCONFIG += \
 
 SOURCES += \
+    src/citymanager.cpp \
+    src/geoinfo.cpp \
     src/main.cpp \
 
 HEADERS += \
+    src/citymanager.h \
+    src/common.h \
+    src/geoinfo.h
 
 DISTFILES += \
+    qml/items/ItemLoader.qml \
+    qml/js/common.js \
+    qml/pages/Favorites.qml \
+    qml/pages/FindCity.qml \
     rpm/ru.bugrazoid.Weather.spec \
     AUTHORS.md \
     CODE_OF_CONDUCT.md \
