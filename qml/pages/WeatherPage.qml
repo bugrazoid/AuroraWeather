@@ -59,6 +59,10 @@ Page {
 
     Component.onCompleted: {
         console.log("WeatherPage.qml loaded");
+        if (cityManager.currentCity === undefined || cityManager.currentCity === "") {
+            itemLoader.show();
+        }
+
         updateUI();
         update();
     }
@@ -122,8 +126,11 @@ Page {
             weatherIcon.weatherCode = cw["v_weathercode"];
             labelWind.windspeed = cw["v_windspeed"];
             labelWindDirection.rotation = cw["v_winddirection"];
+
+            itemWeather.visible = true;
+            itemWind.visible = true;
         } else {
-            console.warn("no weather");
+            console.log("no weather");
         }
     }
 
@@ -232,6 +239,7 @@ Page {
         anchors {
             top: itemCity.bottom
         }
+        visible: false
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -277,6 +285,7 @@ Page {
             right: parent.right
         }
         height: labelWind.height + 10
+        visible: false
 
         Row {
             anchors.horizontalCenter: parent.horizontalCenter

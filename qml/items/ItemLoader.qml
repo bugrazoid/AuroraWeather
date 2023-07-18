@@ -2,6 +2,14 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 Item {
+    function show() {
+        labelLoader.visible = true;
+    }
+
+    function hide() {
+        stop();
+    }
+
     function start() {
         console.log("loader start");
         timerLoader.start();

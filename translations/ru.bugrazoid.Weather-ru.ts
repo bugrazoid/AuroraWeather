@@ -58,17 +58,17 @@
 <context>
     <name>WeatherPage</name>
     <message>
-        <location filename="../qml/pages/WeatherPage.qml" line="177"/>
+        <location filename="../qml/pages/WeatherPage.qml" line="184"/>
         <source>Weather</source>
         <translation type="unfinished">Погода</translation>
     </message>
     <message>
-        <location filename="../qml/pages/WeatherPage.qml" line="287"/>
+        <location filename="../qml/pages/WeatherPage.qml" line="296"/>
         <source>Ветер: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/WeatherPage.qml" line="287"/>
+        <location filename="../qml/pages/WeatherPage.qml" line="296"/>
         <source>м/с</source>
         <translation type="unfinished"></translation>
     </message>
